@@ -19,10 +19,11 @@ int main(){
     r.insert(map<int, string>::value_type (7, "qi"));  
     r.insert(map<int, string>::value_type (8, "ba"));  
     r.insert(map<int, string>::value_type (9, "jiu"));  
-    
+    //cout<<"Input";
     cin>>n;
     int i = 0;
     string j;
+
     //cout<<n.size()<<endl;
     for(i=0;i<n.size();i++){
        
