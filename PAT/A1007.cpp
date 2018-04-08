@@ -2,10 +2,12 @@
 #include<string.h>
 #include<cstdio>
 #include<algorithm>  
+#include<vector>  
 using namespace std;
+
 int t[10005];
-int main(){
-    
+int main(){ 
+        vector<int> vec;
         int n;
         cin>>n;
         for(int i = 0;i<n;i++){
@@ -14,22 +16,26 @@ int main(){
         int s=0,maxs = 0,maxi=0,maxl=0;
         for(int i = 0;i<n;i++){
             s = s + t[i];
-            if(maxs!=max(s,maxs)){
+            if(maxs<max(s,maxs)){
             maxs=max(s,maxs);maxi = i;}
             
             
             if(s<0){s=0;}
         }int tmp = maxs;
+        if(maxs<=0){cout<<0<<" "<<t[0]<<" "<<t[n-1];return 0;}
         for(int i = maxi;i>=0;i--){
             
             tmp = tmp-t[i];
             maxl++;
-            if(tmp==0) break;
+            if(tmp==0) vec.push_back(maxl);
 
 
             
         }
-        if(maxs<0){cout<<0<<" "<<t[0]<<" "<<t[n];return 0;}
+        maxl = vec[vec.size()-1];
+        //cout<<t[1];
+
+        
 
         cout<<maxs<<" "<<t[maxi-maxl+1]<<" "<<t[maxi];
 
