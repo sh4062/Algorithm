@@ -12,7 +12,7 @@ void print(const std::vector<int> &L)
 
 // int partition(vector<int> &vi, int low, int high)
 // {
-//     int pivot = vi[low];
+//     int pivot = vi[high];
 //     int i = low - 1;
 //     for (int j = low; j < high; j++)
 //     {
