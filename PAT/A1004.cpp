@@ -13,25 +13,6 @@ int maxdepth = -1;
 //         child = c;
 //     }
 // };
-void bfs()
-{
-    queue<int> q;
-    q.push(1);
-    level[1] = 0;
-    while (!q.empty())
-    {
-        int index = q.front();
-        q.pop();
-        maxlevel = max(level[index], maxlevel);
-        if (v[index].size() == 0)
-            book[level[index]]++;
-        for (int i = 0; i < v[index].size(); i++)
-        {
-            q.push(v[index][i]);
-            level[v[index][i]] = level[index] + 1;
-        }
-    }
-}
 set<int> nl;
 void dfs(vector<vector<int>> v, int index, int depth, vector<int> &res)
 {

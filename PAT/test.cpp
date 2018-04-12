@@ -1,67 +1,101 @@
 #include <iostream>
+#include <string.h>
+#include <bits/stdc++.h>
+#include <functional>
 using namespace std;
 
-class Yuebao
+// long long int Cal(char c)
+// {
+//     if (c >= '0' && c <= '9')
+//     {
+//         return (c -'0');
+//     }
+//     else
+//         return (c - 'a' + 10);
+// }
+long long int Cal(char a)
 {
-    static double profitRate;
-    double balance;
-public:
-    static void setProfitRate(double rate);
-    double getBalance();
-    /* Your code here! */
-    Yuebao(double yue)
-    {
-        balance = yue;
-    }
-
-    void addProfit()
-    {
-        balance = balance + balance*profitRate;
-    }
-    double deposit(double amount)
-    {
-        balance = balance + amount;
-        return 0;
-    }
-    double withdraw(double amount)
-    {
-        balance = balance - amount;
-        return 0;
-    }
-};
-//静态变量初始化,必须要初始化哦
-double Yuebao::profitRate = 0;
-void Yuebao::setProfitRate(double rate)
-{
-    Yuebao::profitRate = rate;
+    long long r = 0;
+    if ('0' <= a && a <= '9')
+        r = a - '0' + 0;
+    else if ('a' <= a && a <= 'z')
+        r = a - 'a' + 10;
+    return r;
 }
 
-double Yuebao::getBalance()
+long long int CalValueBaseRadix(string a, long long int radix)
 {
-    return Yuebao::balance;
+
+    long long int result = 0;
+
+    long long count = 0;
+    while (a.size() != 0)
+    {
+        result += Cal(a[a.size() - 1]) * pow(radix, count);
+        count++;
+        a.erase(a.end() - 1);
+        if (result < 0)
+            return -1;
+    }
+    return result;
+}
+long long int findlow(string a)
+{
+    char m = a[0];
+    for (long long i = 1; i < a.size(); i++)
+    {
+        m = max(m, a[i]);
+    }
+    return Cal(m);
 }
 
-int main()
+int main(void)
 {
-    int n;
-    while (cin >> n)
+
+    string a, b;
+    long long tag;
+    long long radixA, radixB;
+
+    cin >> a >> b >> tag >> radixA;
+    if (tag == 2)
+        swap(a, b);
+
+    long long minRadix, maxRadix;
+
+    //value
+    long long i;
+    long long int valueA = CalValueBaseRadix(a, radixA);
+
+    minRadix = 0;
+    // for (i = 0; i < b.size(); i++)
+    // {
+    //     if (Cal(b[i]) > minRadix)
+    //         minRadix = Cal(b[i]) + 1;
+    // }
+    minRadix= findlow(b)+1;
+
+    maxRadix = valueA + 1;
+    while (minRadix <= maxRadix)
     {
-        double profitRate;
-        cin >> profitRate;
-        Yuebao::setProfitRate(profitRate);//设定鱼额宝的利率
-        Yuebao y(0); //新建鱼额宝账户，余额初始化为0
-        int operation;//接受输入判断是存还是取
-        double amount;//接受输入存取金额
-        for (int i = 0; i < n; ++i)
+        //cal
+        radixB = (minRadix + maxRadix) / 2;
+        long long int valueB = CalValueBaseRadix(b, radixB);
+
+        if (valueB == -1 || valueB > valueA)
         {
-            y.addProfit();//加入前一天余额产生的利息
-            cin >> operation >> amount;
-            if (operation == 0)
-                y.deposit(amount);//存入金额
-            else
-                y.withdraw(amount);//取出金额
+            maxRadix = radixB - 1;
         }
-        cout << y.getBalance() << endl;//输出最终账户余额
+        else if (valueB < valueA)
+        {
+            minRadix = radixB + 1;
+        }
+        else if (valueA == valueB)
+        {
+            cout << radixB;
+            return 0;
+        }
     }
+
+    cout << "Impossible";
     return 0;
 }
