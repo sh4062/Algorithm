@@ -49,7 +49,7 @@ int main()
     for (indext = 1; indext <= N; indext++){
         if(customers[indext].st>17*3600)break;
     }
-    cout<<indext<<'\n';
+    //cout<<indext<<'\n';
     for (int t = 0 + 8 * 60 * 60; t <= 10*540*60+8*60*60,compc<indext-1; t++)
     {
         
@@ -85,5 +85,5 @@ int main()
         }
     }
     printf("%.1f", sumt / compc);
-    printf("%.1f", compc);
+    //printf("%.1f", compc);
 }
