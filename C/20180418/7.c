@@ -294,7 +294,7 @@ void PrintYear(int year)
 
 int main()
 {
-    int year = 0000;
+    int year = 2018;
     // printf("Input year\n");
     // scanf("%d",&year);
     PrintYear(year);
