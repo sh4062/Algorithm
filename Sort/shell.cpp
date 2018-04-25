@@ -1,4 +1,4 @@
-//Shell sort缩小增量排序
+//shell sort
 #include <bits/stdc++.h>
 using namespace std;
 void print(const std::vector<int> &L)
@@ -11,25 +11,26 @@ void print(const std::vector<int> &L)
 }
 void ShellSort(vector<int> &L)
 {
-    int len = L.size();
-    if (len <= 0)
-        return;
-    for (int div = len / 2; div > 0; div = div / 2) //div为增量不断减小
+    int div = L.size() / 2;
+    for (div; div >=1; div /= 2)//缩小增量 
     {
-        for (int i = 0; i <= div; ++i) //分组成div组
+        for (int i = 0; i <=div; i++)//分组
         {
-            for (int j = i; j < len - div; j = j + div)
-                for (int k = j; k < len; k = k + div)
+            for (int j = i; j < L.size() - div; j += div)
+            {
+                for (int k = j; k < L.size(); k += div)
+                {
                     if (L[j] > L[k])
-                        swap(L[j], L[k]);
+                        swap(L[k], L[j]);
+                }
+            }
         }
     }
 }
 int main()
 {
-    std::vector<int> L = {49, 38, 65, 97, 76, 13, 27, 49, 55, 4, 999, 1111};
+    std::vector<int> L = {49, 38, 65, 97, 76, 13, 27, 49, 55, 4};
     ShellSort(L);
     std::cout << "result : ";
     print(L);
 }
-

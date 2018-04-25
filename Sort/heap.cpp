@@ -1,4 +1,4 @@
-//heap sort 建立小顶堆
+//heap sort 建立大顶堆 然后排序
 #include <bits/stdc++.h>
 using namespace std;
 void print(const std::vector<int> &L)
