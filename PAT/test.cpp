@@ -45,7 +45,7 @@ int main()
         }  
         sort(testee_local.begin(), testee_local.end(), cmp);  
         testee_local[0].loca_rank = 0;  
-        for (int i = 1; i < k ; i++)  
+        for (int i = 1; i < testee_local.size() ; i++)  
         {  
             if (testee_local[i ].score == testee_local[i-1].score)  
                 testee_local[i ].loca_rank = testee_local[i-1].loca_rank;  
@@ -54,8 +54,8 @@ int main()
         }  
         for (int j = 0; j < k; j++)  
         {  
-            tmp = testee_local[j];  
-            testee_final.push_back(tmp);  
+             
+            testee_final.push_back( testee_local[j]);  
         }  
     }  
     sort(testee_final.begin(), testee_final.end(), cmp);  
