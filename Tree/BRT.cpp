@@ -158,7 +158,7 @@ void BRT::in_order(BRTNode *node)
         return;
 
     in_order(node->left);
-    cout << "( " << node->val << ", " << node->color << " )" << endl;
+    cout << "( " << node->val << ", " << node->color << " parent->" << node->parent->val << " )" << endl;
     in_order(node->right);
 }
 //!!!
@@ -248,8 +248,169 @@ void BRT::insert_rebalance(BRTNode *x)
     //根结点为黑色
     root()->color = black;
 }
+/*对于普通二叉树
+"被删结点"没有孩子，那么直接删除即可；//他的替换可以为左也可以为右
+"被删结点"只有一个孩子，那么直接删除该结点，并用该结点的唯一孩子替换它；
+"被删结点"有两个孩子，那么先找出它的"后继结点"，然后删除"被删结点"，再用"后继结点"去替换"被删结点"。
+后继大概就是中序遍历的下一个节点吧
+"我们把"被删结点"称为"原先结点"，用来替换"被删结点"的结点称为"当前结点"。
+*/
 void BRT::erase_rebalance(BRTNode *z)
 {
+    BRTNode *y = z;
+    BRTNode *x = nullptr; 
+    BRTNode *x_parent = nullptr;
+    if (y->left == nullptr)//这里 如果左右都空 用右当做后继替换
+        x = y->right;
+    else if (y->right == nullptr)
+        x = y->left;
+    else
+    {
+        //找出它的"后继结点"
+        y = y->right;   //比y大
+        while (y->left) //比y大里面最小的
+            y = y->left;
+        x = y->right; //比y大里面最小的的大的节点就是后继结点
+    }
+/*1原先结点"为黑色，"当前结点"为红色，那么我们把"原先结点"删掉后，拿"当前结点"去替换它并修改颜色为黑色即可；
+2"原先结点"为黑色，"当前结点"为黑色，这种情况比较复杂，待会再说；
+3"原先结点"为红色，"当前结点"为红色，那么我们把"原先结点"删掉后，直接拿"当前结点"去替换它即可；
+4"原先结点"为红色，"当前结点"为黑色，那么我们把"原先结点"删掉后，再拿"当前结点"去替换它并修改颜色为红色。
+我们发现，此时"原先结点"位置是满足红黑树性质的，但是由于"当前结点"被拿走，"当前结点"位置可能就会违背红黑树性质。
+分析发现，此时的"当前结点"不就是上面"情况1"和"情况2"中所讲的"原先结点"！那么当前的这种情况直接就变成了"情况1"或"情况2"。
+*/
+//"情况2"。这种情况可以进一步再划分为8种情况，因为涉及到镜像操作 4种
+    if (y != z) //y是z的后继 "被删结点"z有2个孩子 y是z的后继 要删除z 用y替换z
+    {
+        z->left->parent = y; //调整z左孩子的父亲指针为y
+        y->left = z->left;   //y的左孩子指向z的左孩子
+
+        if (y != z->right) //y并不是直接是z的右孩子
+        {
+            x_parent = y->parent;
+            if (x)
+                x->parent = y->parent;
+            y->parent->left = x;
+            y->right = z->right;
+            z->right->parent = y;
+        }
+        else //y直接是z的右孩子
+            x_parent = y;
+
+        if (root() == z)
+            root() = y;
+        else if (z->parent->left == z)
+            z->parent->left = y;
+        else
+            z->parent->right = y;
+
+        y->parent = z->parent;
+        swap(y->color, z->color);
+        y = z;
+    }
+    else //"被删结点"只有一个孩子 那么直接删除该结点，并用该结点的唯一孩子替换它；{若没有就用右边(见上面)}
+    {    //调整y->parent和z->parent->left||right
+        x_parent = y->parent;
+        if (x)
+            x->parent = y->parent;
+
+        if (root() == z)//调整z父节点的指针指向x
+        
+            root() = x;
+        else if (z->parent->left == z)
+            z->parent->left = x;
+        else
+            z->parent->right = x;
+    }
+    // now, y is pointing to what you will erase!
+    //      x is the child of y, and note that x might be nullptr.
+    // Now, the actual reblance is coming!
+    // .....
+    if (y->color == black)
+    {
+        while (x != root() && (x == nullptr || x->color == black))
+        {
+            if (x == x_parent->left)
+            {                                 //节点的兄弟      节点
+                BRTNode *w = x_parent->right; // w can not possibly be nullptr!
+
+                if (w->color == red) // Case 1
+                {
+                    w->color = black;
+                    x_parent->color = red;
+                    rotate_l(x_parent);
+                    w = x_parent->right;
+                }
+
+                if ((w->left == nullptr || w->left->color == black) && // Case 2
+                    (w->right == nullptr || w->right->color == black))
+                {
+                    w->color = red;
+                    x = x_parent;
+                    x_parent = x_parent->parent;
+                }
+                else
+                {
+                    if (w->right == nullptr || w->right->color == black) //Case 3
+                    {
+                        if (w->left)
+                            w->left->color = black;
+                        w->color = red;
+                        rotate_r(w);
+                        w = x_parent->right;
+                    }
+
+                    w->color = x_parent->color; // Case 4
+                    x_parent->color = black;
+                    if (w->right)
+                        w->right->color = black;
+                    rotate_l(x_parent);
+                    break;
+                }
+            }
+            else // same as above, just left <-> right x在右边
+            {
+                BRTNode *w = x_parent->left;
+
+                if (w->color == red)
+                {
+                    w->color = black;
+                    x_parent->color = red;
+                    rotate_r(x_parent);
+                    w = x_parent->left;
+                }
+
+                if ((w->right == nullptr || w->right->color == black) &&
+                    (w->left == nullptr || w->left->color == black))
+                {
+                    w->color = red;
+                    x = x_parent;
+                    x_parent = x_parent->parent;
+                }
+                else
+                {
+                    if (w->left == nullptr || w->left->color == black)
+                    {
+                        if (w->right)
+                            w->right->color = black;
+                        w->color = red;
+                        rotate_l(w);
+                        w = x_parent->left;
+                    }
+
+                    w->color = x_parent->color;
+                    x_parent->color = black;
+                    if (w->left)
+                        w->left->color = black;
+                    rotate_r(x_parent);
+                    break;
+                }
+            }
+        } // while (x != root() && (x == nullptr || x->color == black))
+
+        if (x)
+            x->color = black;
+    } // if (y->color == black)
 }
 
 BRT::BRT()
@@ -329,30 +490,41 @@ int main()
 {
     BRT rb_tree;
 
-    // test "insert"
-
-    rb_tree.insert(1);
-    rb_tree.insert(2);
+    // // test "insert"
 
     // rb_tree.insert(1);
+    // rb_tree.insert(2);
 
-    rb_tree.insert(5);
+    // // rb_tree.insert(1);
 
-    rb_tree.insert(7);
-    rb_tree.insert(6);
-    
+    // rb_tree.insert(5);
 
+    // rb_tree.insert(7);
+    // rb_tree.insert(6);
+
+    // rb_tree.insert(4);
+    // rb_tree.insert(9);
+    // rb_tree.insert(8);
+    // rb_tree.insert(11);
+    // rb_tree.insert(11);
+    // rb_tree.insert(10);
+    // rb_tree.insert(12);
+    // rb_tree.insert(4);
+    // rb_tree.insert(9);
+    // rb_tree.insert(8);
+    // rb_tree.insert(11);
+    // rb_tree.insert(11);
+    // rb_tree.insert(10);
+    // rb_tree.insert(12);
+    // rb_tree.print();
+    // rb_tree.erase(9);
+    // rb_tree.erase(8);
+    // rb_tree.erase(11);
+    // rb_tree.erase(11);
+    rb_tree.insert(1);
+    rb_tree.insert(2);
+    rb_tree.insert(3);
     rb_tree.insert(4);
-    rb_tree.insert(9);
-    rb_tree.insert(8);
-    rb_tree.insert(11); rb_tree.insert(11);
-    rb_tree.insert(10);
-    rb_tree.insert(12);
-    rb_tree.insert(4);
-    rb_tree.insert(9);
-    rb_tree.insert(8);
-    rb_tree.insert(11); rb_tree.insert(11);
-    rb_tree.insert(10);
-    rb_tree.insert(12);
+    rb_tree.erase(2);
     rb_tree.print();
 }
