@@ -1,76 +1,119 @@
-#include <iostream>  
-#include <vector>  
-#include <string>  
-#include <algorithm>  
-  
-using namespace std;  
-  
-struct Testee  
-{  
-    string id;  
-    int score;  
-    int location_num;  
-    int loca_rank;  
-    int final_rank;  
-};  
-  
-vector<Testee> testee_final;  
-vector<Testee> testee_local;  
-  
-bool cmp( Testee a,  Testee b)  
-{  
-    if (a.score != b.score)  
-        return a.score > b.score;  
-    else  
-        return a.id < b.id;  
-}  
-  
-int main()  
-{  
-    int n;  
-    cin >> n;  
-    int tot = 0;  
-    for (int i = 0; i < n; i++)  
-    {  
-        int k;  
-        cin >> k;  
-        tot += k;  
-        Testee tmp;  
-        testee_local.clear();  
-        for (int j = 0; j < k; j++)  
-        {  
-            cin >> tmp.id >> tmp.score;  
-            tmp.location_num = i;  
-            testee_local.push_back(tmp);  
-        }  
-        sort(testee_local.begin(), testee_local.end(), cmp);  
-        testee_local[0].loca_rank = 0;  
-        for (int i = 1; i < testee_local.size() ; i++)  
-        {  
-            if (testee_local[i ].score == testee_local[i-1].score)  
-                testee_local[i ].loca_rank = testee_local[i-1].loca_rank;  
-            else  
-                testee_local[i ].loca_rank = i ;  
-        }  
-        for (int j = 0; j < k; j++)  
-        {  
-             
-            testee_final.push_back( testee_local[j]);  
-        }  
-    }  
-    sort(testee_final.begin(), testee_final.end(), cmp);  
-    testee_final[0].final_rank = 0;  
-    for (int i = 1; i < tot; i++)  
-    {  
-        if (testee_final[i ].score == testee_final[i-1].score)  
-            testee_final[i].final_rank = testee_final[i-1].final_rank;  
-        else  
-            testee_final[i ].final_rank = i ;  
-    }  
-    cout << testee_final.size() << endl;  
-    for (int i = 0; i < testee_final.size(); i++)  
-    {  
-        cout << testee_final[i].id << " " << testee_final[i].final_rank + 1 << " " << testee_final[i].location_num + 1 << " " << testee_final[i].loca_rank + 1 << endl;  
-    }  
-    return 0;  
-}  
+//1022. Digital Library (30)
+#include <bits/stdc++.h>
+using namespace std;
+
+struct book
+{
+    int id;
+    string title;
+    string author;
+    //vector<string> keywords;
+    string keywords;
+    string publisher;
+    int year;
+};
+int main()
+{
+    //ios::sync_with_stdio(false);
+    //cin.tie(0);
+    string tmps;
+    getline(cin, tmps);
+
+    int n;
+    n = stoi(tmps);
+
+    vector<book> res;
+
+    int a;
+    while (n--)
+    {
+        book tmp;
+
+        getline(cin, tmps);
+        tmp.id = stoi(tmps);
+        getline(cin, tmp.title);
+
+        getline(cin, tmp.author);
+        //vector<string> keywords;
+        // string tmps;
+        getline(cin, tmp.keywords);
+        getline(cin, tmp.publisher);
+        getline(cin, tmps);
+        tmp.year = stoi(tmps);
+        res.push_back(tmp);
+    }
+    // map<int,string>mapp[5];
+    // for (auto i:res){
+    //     mapp[0][i.id] = i;
+    // }
+    int q;
+    int qq;
+    char *qss;
+    cin >> q;
+    getchar();
+    set<int> out;
+    while (q--)
+    {
+
+        scanf("%d:", &qq);
+        getchar();
+        string qs;
+        getline(cin, qs);
+
+        for (auto i : res)
+        {
+            if (qq == 5)
+            {
+                if (i.year == stoi(qs))
+                {
+                    out.insert(i.id);
+                    //cout << i.id<<'\n';
+                }
+            }
+            else if (qq == 4)
+            {
+                if (i.publisher.compare(qs) == 0)
+                {
+                    //cout << i.id<<'\n';
+                    out.insert(i.id);
+                }
+            }
+            else if (qq == 2)
+            {
+                if (i.author.compare(qs) == 0)
+                {
+                    // cout << i.id<<'\n';
+                    out.insert(i.id);
+                }
+            }
+            else if (qq == 1)
+            {
+                if (i.title.compare(qs) == 0)
+                {
+                    //cout << i.id<<'\n';
+                    out.insert(i.id);
+                }
+            }
+            else if (qq == 3)
+            {
+                if (i.keywords.find(qs) != -1)
+                {
+                    // cout << i.id<<'\n';
+                    out.insert(i.id);
+                }
+            }
+        }
+        printf("%d: ",qq);
+        cout<<qs<<'\n';
+        if (out.size() == 0)
+        {
+            cout << "Not Found" << endl;
+        }
+        else
+        {
+            for (auto i : out)
+               printf("%07d\n",i);
+        }
+        out.clear();
+    }
+}
