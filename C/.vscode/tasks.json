@@ -2,8 +2,8 @@
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
     "version": "0.1.0",
-    "command": "gcc",
+    "command": "g++",
     "isShellCommand": true,
-    "args": ["-g","${workspaceRoot}/20180427/SIMS/main.c"],
+    "args": ["-g","${workspaceRoot}/20180501/findkin2sortedl.c"],
     "showOutput": "always"
 }
