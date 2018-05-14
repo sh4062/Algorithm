@@ -1,8 +1,8 @@
 #include "fun.h"
-#define N 10000000
+#define N 100000
 int main(){
   int shmid;
-  shmid = shmget(1000,4096,IPC_CREAT);
+  shmid = shmget(1008510,4096,IPC_CREAT);
   if(shmid == -1){
     perror("shmget");
     return -1;
