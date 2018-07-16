@@ -54,6 +54,17 @@
         "type_traits": "c",
         "typeindex": "c",
         "typeinfo": "c",
-        "config.h": "c"
+        "config.h": "c",
+        "assert.h": "c",
+        "deque": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "vector": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "numeric": "cpp",
+        "algorithm": "cpp",
+        "string": "cpp",
+        "strstream": "cpp"
     }
 }

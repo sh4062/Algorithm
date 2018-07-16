@@ -1,4 +1,12 @@
 #include "server.h"
+factory f;
+
+
+void handleS(int signo, siginfo_t * p, void *p1){
+	printf("handle Sig!\n");
+	factory_exit(&f);
+	exit(0);
+}
 
 int main()
 {
@@ -12,7 +20,7 @@ int main()
     char server_port[10];
     fscanf(conf, "%s%s", server_ip, server_port);
     printf("%s\n%s\n", server_ip, server_port);
-    factory f;
+    
     factory_init(&f, MaxPthread, PthreadCap);
     factory_start(&f);
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -76,7 +84,20 @@ int main()
     time_t rawtime;
     struct tm *info;
     char buffer[80];
-
+    //信号
+    struct sigaction act;
+    sigemptyset(&act.sa_mask);
+    sigaddset(&act.sa_mask, SIGQUIT);
+    // struct sigaction st;
+    act.sa_sigaction = handleS;
+    act.sa_flags = SA_SIGINFO | SA_NODEFER;
+    ret = sigaction(SIGINT, &act, NULL);
+    if (ret == -1)
+    {
+        perror("SIG\n");
+        return -1;
+    }
+    //sigaction(SIGQUIT, &act, NULL);
     while (1)
     {
         // nfds = epoll_wait(epfd, events, 10, 500);
@@ -88,7 +109,7 @@ int main()
         len = sizeof(struct sockaddr);
         client_fd = accept(server_fd, (struct sockaddr *)&client, &len);
         printf("@client ip=%s,port=%d\n", inet_ntoa(client.sin_addr), ntohs(client.sin_port));
-        sprintf(logger,"%s@client ip=%s,port=%d ",logger, inet_ntoa(client.sin_addr), ntohs(client.sin_port));
+        sprintf(logger, "%s@client ip=%s,port=%d ", logger, inet_ntoa(client.sin_addr), ntohs(client.sin_port));
         //len = send(client_fd, "Welcome!\n", 21, 0);
         train t;
         bzero(&t, sizeof(train));
@@ -96,16 +117,15 @@ int main()
         strcpy(t.buf, "Welcome!\n");
         t.len = strlen(t.buf) + 1;
         len = send_n(client_fd, (char *)&t, 4 + t.len);
-        time( &rawtime );
+        time(&rawtime);
 
-        info = localtime( &rawtime );
+        info = localtime(&rawtime);
         printf("：%s", asctime(info));
-        sprintf(logger,"%s：%s",logger, asctime(info));
+        sprintf(logger, "%s：%s", logger, asctime(info));
         printf("logger:::%s", logger);
-        fprintf(log, "%s",logger);
+        fprintf(log, "%s", logger);
         // fclose(log);
-        
-  
+
         // fd_Setnonblocking(client_fd);
         // event.data.fd = client_fd;
         // event.events = EPOLLIN | EPOLLET;

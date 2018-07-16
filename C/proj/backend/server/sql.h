@@ -9,7 +9,9 @@ int sql_ls(char*argv[]);
 int sql_gets(char*argv[]);
 int sql_remove(char*argv[]);
 int sql_md5(char *argv);
+int sql_mkdir(char *argv[]);
 int sql_puts_local(char *argv[]);
 int sql_puts_user(char *argv[]);
 int sql_puts_local_update(char *argv);
+int sql_reg(char *argv[]);
 #endif

@@ -13,7 +13,7 @@ void handleS(int signo, siginfo_t * p, void *p1){
 int main(){
   struct sigaction act;
   sigemptyset(&act.sa_mask);
-sigaddset(&act.sa_mask,SIGQUIT);
+ sigaddset(&act.sa_mask,SIGQUIT);
 // struct sigaction st;
  act.sa_sigaction = handleS;
 

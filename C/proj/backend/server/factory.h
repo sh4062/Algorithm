@@ -15,6 +15,7 @@ typedef struct {
 void factory_init(factory*, int,int);
 void factory_start(factory*);
 void * threadfunc(void*);
+void factory_exit(factory *p);
 typedef struct {
   int len;
   char buf[1024];
