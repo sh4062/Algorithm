@@ -1,119 +1,49 @@
-//1022. Digital Library (30)
-#include <bits/stdc++.h>
-using namespace std;
-
-struct book
-{
-    int id;
-    string title;
-    string author;
-    //vector<string> keywords;
-    string keywords;
-    string publisher;
-    int year;
-};
-int main()
-{
-    //ios::sync_with_stdio(false);
-    //cin.tie(0);
-    string tmps;
-    getline(cin, tmps);
-
-    int n;
-    n = stoi(tmps);
-
-    vector<book> res;
-
-    int a;
-    while (n--)
-    {
-        book tmp;
-
-        getline(cin, tmps);
-        tmp.id = stoi(tmps);
-        getline(cin, tmp.title);
-
-        getline(cin, tmp.author);
-        //vector<string> keywords;
-        // string tmps;
-        getline(cin, tmp.keywords);
-        getline(cin, tmp.publisher);
-        getline(cin, tmps);
-        tmp.year = stoi(tmps);
-        res.push_back(tmp);
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        vector<int> res;
+        
+        int b = matrix.size();
+        if(b==0) return res;
+        int a = matrix[0].size();
+        if(b==1)return matrix[0];
+        int i = -1,j=-1;
+        int m =a*b;
+        int layer = 1;
+        if(a==1){
+            for( ++i ;i<b;i++)
+            res.push_back(matrix[i][0]);
+            return res;
+        }
+        int c =0;
+        //while(i<a&&j<b){
+            
+              
+        for( c=i ;c<a;c++){
+            res.push_back(matrix[j][c]);
+            if(res.size()==m)return res;
+        }
+        j++;
+       
+        for( c=j ;c<b;c++){
+            res.push_back(matrix[c][a-1]);
+            if(res.size()==m)return res;
+        }
+        a--;
+        
+         for( c=a-1;c>=i&&b-1>=j;c--){
+           res.push_back(matrix[b-1][c]);
+             if(res.size()==m)return res;
+        }
+        b--;
+        
+        for( c=b-1 ;c>=j&&a-1>=i;c--){
+            res.push_back(matrix[c][i]);
+            if(res.size()==m)return res;
+         }
+        i++;
+   
+         
+       //}
+        return res;
+        
+        
     }
-    // map<int,string>mapp[5];
-    // for (auto i:res){
-    //     mapp[0][i.id] = i;
-    // }
-    int q;
-    int qq;
-    char *qss;
-    cin >> q;
-    getchar();
-    set<int> out;
-    while (q--)
-    {
-
-        scanf("%d:", &qq);
-        getchar();
-        string qs;
-        getline(cin, qs);
-
-        for (auto i : res)
-        {
-            if (qq == 5)
-            {
-                if (i.year == stoi(qs))
-                {
-                    out.insert(i.id);
-                    //cout << i.id<<'\n';
-                }
-            }
-            else if (qq == 4)
-            {
-                if (i.publisher.compare(qs) == 0)
-                {
-                    //cout << i.id<<'\n';
-                    out.insert(i.id);
-                }
-            }
-            else if (qq == 2)
-            {
-                if (i.author.compare(qs) == 0)
-                {
-                    // cout << i.id<<'\n';
-                    out.insert(i.id);
-                }
-            }
-            else if (qq == 1)
-            {
-                if (i.title.compare(qs) == 0)
-                {
-                    //cout << i.id<<'\n';
-                    out.insert(i.id);
-                }
-            }
-            else if (qq == 3)
-            {
-                if (i.keywords.find(qs) != -1)
-                {
-                    // cout << i.id<<'\n';
-                    out.insert(i.id);
-                }
-            }
-        }
-        printf("%d: ",qq);
-        cout<<qs<<'\n';
-        if (out.size() == 0)
-        {
-            cout << "Not Found" << endl;
-        }
-        else
-        {
-            for (auto i : out)
-               printf("%07d\n",i);
-        }
-        out.clear();
-    }
-}
